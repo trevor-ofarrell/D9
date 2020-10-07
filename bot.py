@@ -36,6 +36,13 @@ async def greet(ctx, members: commands.Greedy[discord.Member]):
     await ctx.send('Greetings dearest {} I wish you a wonderful day!'.format(wonderful_people))
 
 @bot.command()
+async def gif(ctx, arg):
+    if not arg:
+            await ctx.send('You must specify an argument!')
+    gify = await search_gifs(arg)
+    await ctx.send(gify)
+
+@bot.command()
 async def slap(ctx, members: commands.Greedy[discord.Member], *, reason='no reason'):
     slapped = ", ".join(x.name for x in members)
     slap_urls = [
@@ -154,7 +161,7 @@ async def gamble(ctx, arg=1):
 
 async def search_gifs(query):
     try:
-        response = api_instance.gifs_search_get(GIF_TOKEN, query, limit=3, rating='g')
+        response = api_instance.gifs_search_get(GIF_TOKEN, query, limit=10, rating='g')
         lst = list(response.data)
         gif = random.choices(lst)
 
