@@ -48,6 +48,24 @@ async def slap(ctx, members: commands.Greedy[discord.Member], *, reason='no reas
     this_slap = random.choices(slap_urls)
     em = discord.Embed(title = '{} just got slapped for {}'.format(slapped, reason), color=discord.Color.red())
     em.set_image(url=this_slap[0])
+    await ctx.send(embed=em)
+
+@bot.command()
+async def hug(ctx, members: commands.Greedy[discord.Member]):
+    hugged = ", ".join(x.name for x in members)
+    hug_urls = [
+        "https://media.giphy.com/media/EvYHHSntaIl5m/giphy.gif",
+        "https://media.giphy.com/media/ZBQhoZC0nqknSviPqT/giphy.gif",
+        "https://media.giphy.com/media/gnXG2hODaCOru/giphy.gif",
+        "https://media.giphy.com/media/16bJmyPvRbCDu/giphy.gif",
+        "https://media.giphy.com/media/VbawWIGNtKYwOFXF7U/giphy.gif",
+        "https://media.giphy.com/media/VduFvPwm3gfGO8duNN/giphy.gif",
+        "https://media.giphy.com/media/l41lSTVB8eei3U3hC/giphy.gif",
+        "https://media.giphy.com/media/hpQcDH5EfJRwxm03Uh/giphy.gif",
+    ]
+    this_hug = random.choices(hug_urls)
+    em = discord.Embed(title = '{} hugs {}! <3 '.format(ctx.author.name, hugged), color=discord.Color.dark_purple())
+    em.set_image(url=this_hug[0])
     await ctx.send(embed=em)   
 
 @bot.command(aliases=['8ball'])
