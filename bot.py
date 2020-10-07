@@ -1,16 +1,10 @@
 # bot.py
 import os
-
 import discord
-
 import json
-
 from dotenv import load_dotenv
-
 import random
-
 from discord.ext import commands
-
 import giphy_client
 from discord.ext.commands import Bot
 from giphy_client.rest import ApiException
@@ -94,7 +88,7 @@ async def _8ball(ctx, *, question):
         'Outlook good.', 
         'Better not tell you now.', 
         'Cannot predict now.',
-            'My reply is no.', 
+        'My reply is no.', 
         'Outlook not so good.',
     ]
     await ctx.send(f'{random.choice(responses)}') 
@@ -118,13 +112,22 @@ async def balance(ctx):
 
 @bot.command()
 async def send(ctx, members: commands.Greedy[discord.Member], amount=1):
+    send_to = ", ".join(x.name for x in members)
     await account(ctx.author)
     users = await get_eco_data()
     user = ctx.author
-    await ctx.send(f"You sent {members.name} {amount} d9's")
-    users[str(user.id)]["wallet"] += amount
-    with open("usereconomydata.json", "w") as f:
-        json.dump(users, f)   
+    if amount > users[str(user.id)]["wallet"]:
+        wallet_amt = users[str(user.id)]["wallet"]
+        await ctx.send('Sorry, you only have {} d9\'s :\'('.format(wallet_amt))
+    else:
+        await ctx.send(f"You sent {send_to} {amount} d9's!!")
+        users[str(user.id)]["wallet"] -= amount
+        try:
+            users[str(members[0].id)]["wallet"] += amount
+       except KeyError:
+          with open("usereconomydata.json", "w") as f:
+              json.dump({str(members[0].id):{"wallet": 100}}, f)
+    return True
 
 @bot.command()
 async def beg(ctx):
@@ -142,26 +145,31 @@ async def gamble(ctx, arg=1):
     users = await get_eco_data()
     user = ctx.author
     flip = random.choice(['win', 'loose'])
-    if flip == 'win':
-        users[str(user.id)]["wallet"] += int(arg)
-        with open("usereconomydata.json", "w") as f:
-            json.dump(users, f)
-        em = discord.Embed(title = f"{ctx.author.name} won {arg} d9's!!!", color=discord.Color.green())
-        await ctx.send(embed=em)
 
+    if arg > users[str(user.id)]["wallet"]:
+        wallet_amt = users[str(user.id)]["wallet"]
+        await ctx.send('Sorry, you only have {} d9\'s :\'('.format(wallet_amt))
     else:
-        users[str(user.id)]["wallet"] -= int(arg)
-        with open("usereconomydata.json", "w") as f:
-            json.dump(users, f)
-        em = discord.Embed(title = f"{ctx.author.name} lost {arg} d9's :'(", color=discord.Color.red())
-        await ctx.send(embed=em)
-        await ctx.send(f"f")
+        if flip == 'win':
+            users[str(user.id)]["wallet"] += int(arg)
+            with open("usereconomydata.json", "w") as f:
+                json.dump(users, f)
+            em = discord.Embed(title = f"{ctx.author.name} won {arg} d9's!!!", color=discord.Color.green())
+            await ctx.send(embed=em)
+
+        else:
+            users[str(user.id)]["wallet"] -= int(arg)
+            with open("usereconomydata.json", "w") as f:
+                json.dump(users, f)
+            em = discord.Embed(title = f"{ctx.author.name} lost {arg} d9's :'(", color=discord.Color.red())
+            await ctx.send(embed=em)
+            await ctx.send(f"f")
 
     return True
 
 async def search_gifs(query):
     try:
-        response = api_instance.gifs_search_get(GIF_TOKEN, query, limit=10, rating='g')
+        response = api_instance.gifs_search_get(GIF_TOKEN, query, limit=15, rating='r')
         lst = list(response.data)
         gif = random.choices(lst)
 
