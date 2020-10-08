@@ -15,34 +15,59 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 GIF_TOKEN = os.getenv('GIFY_TOKEN') 
 
-bot = commands.Bot(command_prefix=['d9 !', 'D9 !'], help_command=None)
+bot = commands.Bot(command_prefix=['d9 ', 'D9 '], help_command=None)
 
 api_instance = giphy_client.DefaultApi()
 
-"""@bot.command()
+@bot.command()
 async def get_all_users(ctx):
 	for guild in bot.guilds:
 		for member in guild.members:
 			l = []
 			l.append(member)
 	await ctx.send(l)
-"""
+
+obama = ['Barack Obama', 'barack obama']
+
+def obama_check(message):
+    content = message.content.lower()
+    return any(t in content for t in obama)
 
 @bot.command()
 async def test(ctx):
-		msg = await ctx.send('TEST')
-		await msg.add_reaction('✅')
-		await asyncio.sleep(5)
-
-		users = []
-		cache_msg = discord.utils.get(bot.cached_messages, id=msg.id)
-		for reaction in cache_msg.reactions:
-			async for user in reaction.users():
-				users.append(user)
-		if not cache_msg.reactions:
-			await ctx.send("hello")
-		else:
-			await ctx.send(f"users: {', '.join(user.name for user in users)}")
+    msg = await ctx.send('TEST')
+    await msg.add_reaction('✅')
+    await asyncio.sleep(5)
+    users = []
+    cache_msg = discord.utils.get(bot.cached_messages, id=msg.id)
+    for reaction in cache_msg.reactions:
+        async for user in reaction.users():
+            users.append(user)
+    new_msg = await ctx.send(":books: :books: :books: :books: :books: :books: :books: :books: :books:")
+    await asyncio.sleep(1)
+    await new_msg.edit(content=":books: :books: :books: :books: :books: :books: :books: :books:")
+    await asyncio.sleep(1)
+    await new_msg.edit(content=":books: :books: :books: :books: :books: :books: :books:")
+    await asyncio.sleep(1)
+    await new_msg.edit(content=":books: :books: :books: :books: :books: :books:")
+    await asyncio.sleep(1)
+    await new_msg.edit(content=":books: :books: :books: :books: :books:")
+    await asyncio.sleep(1)
+    await new_msg.edit(content=":books: :books: :books: :books:")
+    await asyncio.sleep(1)
+    await new_msg.edit(content=":books: :books: :books:")
+    await asyncio.sleep(1)
+    await new_msg.edit(content=":books: :books:")
+    await asyncio.sleep(1)
+    await new_msg.edit(content=":books:")
+    await asyncio.sleep(1)
+    await new_msg.edit(content=":confetti_ball: Game Starting!! :confetti_ball:")
+    await asyncio.sleep(1)
+    await new_msg.edit(content="Who is the 44th president of the United States?")
+    msg = await bot.wait_for('message', check=obama_check)
+    if msg:
+        await msg.add_reaction('✅')
+        await ctx.send(str(msg.author.name) + "wins this one")
 
 @bot.command()
 async def help(ctx):
@@ -236,6 +261,12 @@ async def get_eco_data():
     with open("usereconomydata.json", 'r') as f:
         users = json.load(f)
     return users
+
+async def on_message(message):
+    if message.content == "Barack Obama":
+        await message.add_reaction('✅')
+        await message.edit(content="trevor wins")
+
 
 bot.run(TOKEN)
 
