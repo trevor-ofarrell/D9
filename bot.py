@@ -7,6 +7,7 @@ import random
 from discord.ext import commands
 import giphy_client
 from discord.ext.commands import Bot
+import asyncio
 from giphy_client.rest import ApiException
 
 load_dotenv()
@@ -14,11 +15,45 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 GIF_TOKEN = os.getenv('GIFY_TOKEN') 
 
-client = discord.Client()
-
-bot = commands.Bot(command_prefix=['d9 !', 'D9 !'])
+bot = commands.Bot(command_prefix=['d9 !', 'D9 !'], help_command=None)
 
 api_instance = giphy_client.DefaultApi()
+
+"""@bot.command()
+async def get_all_users(ctx):
+	for guild in bot.guilds:
+		for member in guild.members:
+			l = []
+			l.append(member)
+	await ctx.send(l)
+"""
+
+@bot.command()
+async def test(ctx):
+		msg = await ctx.send('TEST')
+		await msg.add_reaction('✅')
+		await asyncio.sleep(5)
+
+		users = []
+		cache_msg = discord.utils.get(bot.cached_messages, id=msg.id)
+		for reaction in cache_msg.reactions:
+			async for user in reaction.users():
+				users.append(user)
+		if not cache_msg.reactions:
+			await ctx.send("hello")
+		else:
+			await ctx.send(f"users: {', '.join(user.name for user in users)}")
+
+@bot.command()
+async def help(ctx):
+    em = discord.Embed(title = 'Command list', color=discord.Color.green())
+    em.add_field(name="Actions", value="greet, hug, slap - Usage: d9 !<command> <@username>")
+    em.add_field(name="Gamble", value="Usage: d9 !gamble 100")
+    em.add_field(name="Flip a coin", value="Usage: d9 !flipcoin")
+    em.add_field(name="Fun", value="8ball")
+    em.add_field(name="Economy", value="balance, send")
+    em.add_field(name="Gifs", value="Usage: d9 !gif <whatever you want a gif of>")
+
 
 @bot.command()
 async def echo(ctx, *args):
@@ -124,7 +159,7 @@ async def send(ctx, member: discord.Member, amount=1):
         try:
           users[str(member.id)]["wallet"] += amount
         except KeyError:
-          users[str(member.id)] = {"wallet" : amount}
+          users[str(member.id)] = {"wallet" : amount, "name": member.name}
           with open("usereconomydata.json", "w") as f:
             json.dump(users, f)
         
