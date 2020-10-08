@@ -32,7 +32,7 @@ async def greet(ctx, members: commands.Greedy[discord.Member]):
 @bot.command()
 async def gif(ctx, arg):
     if not arg:
-            await ctx.send('You must specify an argument!')
+        await ctx.send('You must specify an argument!')
     gify = await search_gifs(arg)
     await ctx.send(gify)
 
@@ -111,8 +111,7 @@ async def balance(ctx):
     await ctx.send(embed=em)
 
 @bot.command()
-async def send(ctx, members: commands.Greedy[discord.Member], amount=1):
-    send_to = ", ".join(x.name for x in members)
+async def send(ctx, member: discord.Member, amount=1):
     await account(ctx.author)
     users = await get_eco_data()
     user = ctx.author
@@ -120,13 +119,18 @@ async def send(ctx, members: commands.Greedy[discord.Member], amount=1):
         wallet_amt = users[str(user.id)]["wallet"]
         await ctx.send('Sorry, you only have {} d9\'s :\'('.format(wallet_amt))
     else:
-        await ctx.send(f"You sent {send_to} {amount} d9's!!")
+        await ctx.send(f"You sent {member.name} {amount} d9's!!")
         users[str(user.id)]["wallet"] -= amount
         try:
-            users[str(members[0].id)]["wallet"] += amount
-       except KeyError:
+          users[str(member.id)]["wallet"] += amount
+        except KeyError:
+          users[str(member.id)] = {"wallet" : amount}
           with open("usereconomydata.json", "w") as f:
-              json.dump({str(members[0].id):{"wallet": 100}}, f)
+            json.dump(users, f)
+        
+        with open("usereconomydata.json", "w") as f:
+          json.dump(users, f)
+       
     return True
 
 @bot.command()
