@@ -1,6 +1,12 @@
 {
     "items": [
-            {"q" : "Who is the 44th president of the United States?", "a" : ["Barack Obama", "barack obama"]},
-            {"q" : "What is the name of Han Solo’s ship?", "a" : ["Millennium Falcon", "millennium falcon", "Millennium falcon", "millennium Falcon"]}
+        {"q" : "Who is the 44th president of the United States?", "a" : ["Barack Obama", "barack obama"]},
+        {"q" : "What is the name of Han Solo’s ship?", "a" : ["Millennium Falcon", "millennium falcon", "Millennium falcon", "millennium Falcon"]},
+        {"q" : "How many continents are there?", "a" : ["Seven", "seven", "7", "7.0"]},
+        {"q" : "What is the chemical formula of water?", "a" : ["h2o", "H2O"]},
+        {"q" : "In what city is the Louvre museum located?", "a" : ["paris", "Paris"]},
+        {"q" : "Which athlete is known as the fastest man on earth?", "a" : ["Usain Bolt", "usain bolt", "Usain bolt", "usain Bolt"]},
+        {"q" : "What's the scientific name for the process that plants use to convert sunlight to energy?", "a" : ["Photosynthesis", "photosynthesis"]},
+        {"q" : "Which musician is known as the King of Pop?", "a" : ["Michael Jackson", "michael jackson"]}
     ]
 }

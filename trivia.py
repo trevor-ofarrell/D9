@@ -13,30 +13,29 @@ async def play_trivia(new_msg, ctx, bot):
         trivia = json.load(f)
     data = trivia['items']
     random.shuffle(data)
+    flag = 0
     for item in data:
-        flag = 0
-        for key in item:
-            q = item['q']
-            a = item['a']
-            if flag < 1:
-                flag += 1
-                await new_msg.edit(content=q)
-                global triv
-                triv = a
-                msg = await bot.wait_for('message', check=check)
-                if msg:
-                    await msg.add_reaction('✅')
-                    await ctx.send(str(msg.author.name) + "wins this one")
-                await asyncio.sleep(2)
-            else:
-                flag += 1
-                await ctx.send(q)
-                triv = a
-                msg = await bot.wait_for('message', check=check)
-                if msg:
-                    await msg.add_reaction('✅')
-                    await ctx.send(str(msg.author.name) + "wins this one!!")
-                await asyncio.sleep(2)
+        q = item['q']
+        a = item['a']
+        if flag < 1:
+            flag += 1
+            await new_msg.edit(content=q)
+            global triv
+            triv = a
+            msg = await bot.wait_for('message', check=check)
+            if msg:
+                await msg.add_reaction('✅')
+                await ctx.send(str(msg.author.name) + "wins this one")
+            await asyncio.sleep(2)
+        else:
+            flag += 1
+            await ctx.send(q)
+            triv = a
+            msg = await bot.wait_for('message', check=check)
+            if msg:
+                await msg.add_reaction('✅')
+                await ctx.send(str(msg.author.name) + "wins this one!!")
+            await asyncio.sleep(2)
 
 def obama_check(message):
     obama = ['Barack Obama', 'barack obama']
@@ -45,6 +44,7 @@ def obama_check(message):
 
 def check(message):
     content = message.content.lower()
+    print(content, flush=True)
     return any(t in content for t in triv)
 
 async def quiz(ctx, cache_msg, bot):
