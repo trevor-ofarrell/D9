@@ -30,9 +30,9 @@ async def get_all_users(ctx):
 
 @bot.command()
 async def quiz(ctx):
-    embed = discord.Embed(title = f"Trivia!", color=discord.Color.green())
-    embed.add_field(name="Join the Game!", value="Add reaction to play! The quickest to answer wins the point, and the most points wins the round!")
-    embed.set_image(url="https://media3.giphy.com/media/7jqTl4trn6keI/giphy.gif?cid=ecf05e47sarih6uvl6txz5gjtj8kaxutvl83e8e98y29z9pe&rid=giphy.gif")
+    embed = discord.Embed(title = f"Trivia! :nerd:", color=discord.Color.green())
+    embed.add_field(name="Join the Game!", value="Add reaction to play. The quickest to answer wins the point, and the most points wins the round!")
+    embed.set_image(url="https://media.giphy.com/media/3ohs7Xldjh7DndQnBu/giphy.gif")
     msg = await ctx.send(embed=embed)
     await msg.add_reaction('✅')
     await asyncio.sleep(5)
