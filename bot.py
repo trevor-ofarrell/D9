@@ -9,7 +9,7 @@ import giphy_client
 from discord.ext.commands import Bot
 import asyncio
 from giphy_client.rest import ApiException
-from trivia import quiz
+from trivia import start_quiz
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -28,18 +28,17 @@ async def get_all_users(ctx):
 			l.append(member)
 	await ctx.send(l)
 
-def obama_check(args, message):
-    content = message.content.lower()
-    return any(t in content for t in args)
-
 @bot.command()
-async def test(ctx):
-    msg = await ctx.send('TEST')
+async def quiz(ctx):
+    embed = discord.Embed(title = f"Trivia!", color=discord.Color.green())
+    embed.add_field(name="Join the Game!", value="Add reaction to play! The quickest to answer wins the point, and the most points wins the round!")
+    embed.set_image(url="https://media3.giphy.com/media/7jqTl4trn6keI/giphy.gif?cid=ecf05e47sarih6uvl6txz5gjtj8kaxutvl83e8e98y29z9pe&rid=giphy.gif")
+    msg = await ctx.send(embed=embed)
     await msg.add_reaction('✅')
     await asyncio.sleep(5)
     users = []
     cache_msg = discord.utils.get(bot.cached_messages, id=msg.id)
-    await quiz(ctx, cache_msg, bot)
+    await start_quiz(ctx, cache_msg, bot)
 
 @bot.command()
 async def help(ctx):

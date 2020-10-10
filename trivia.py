@@ -7,8 +7,9 @@ from discord.ext.commands import Bot
 import asyncio
 
 triv = []
+reacted = []
 
-async def play_trivia(new_msg, ctx, bot):
+async def play_trivia(new_msg, ctx, bot, users):
     with open("trivia_questions.json", 'r') as f:
         trivia = json.load(f)
     data = trivia['items']
@@ -20,12 +21,13 @@ async def play_trivia(new_msg, ctx, bot):
         if flag < 1:
             flag += 1
             await new_msg.edit(content=q)
-            global triv
+            global triv, reacted
             triv = a
+            reacted = users
             msg = await bot.wait_for('message', check=check)
             if msg:
                 await msg.add_reaction('✅')
-                await ctx.send(str(msg.author.name) + "wins this one")
+                await ctx.send(str(msg.author.name) + "wins this one!")
             await asyncio.sleep(2)
         else:
             flag += 1
@@ -34,20 +36,16 @@ async def play_trivia(new_msg, ctx, bot):
             msg = await bot.wait_for('message', check=check)
             if msg:
                 await msg.add_reaction('✅')
-                await ctx.send(str(msg.author.name) + "wins this one!!")
+                await ctx.send(str(msg.author.name) + "wins this one!")
             await asyncio.sleep(2)
-
-def obama_check(message):
-    obama = ['Barack Obama', 'barack obama']
-    content = message.content.lower()
-    return any(t in content for t in obama)
 
 def check(message):
     content = message.content.lower()
-    print(content, flush=True)
-    return any(t in content for t in triv)
+    if message.author in reacted:
+        print(reacted, flush=True)
+        return any(t in content for t in triv)
 
-async def quiz(ctx, cache_msg, bot):
+async def start_quiz(ctx, cache_msg, bot):
     for reaction in cache_msg.reactions:
             async for user in reaction.users():
                 users = []
@@ -72,5 +70,5 @@ async def quiz(ctx, cache_msg, bot):
     await asyncio.sleep(1)
     await new_msg.edit(content=":confetti_ball: Game Starting!! :confetti_ball:")
     await asyncio.sleep(1)
-    await play_trivia(new_msg, ctx, bot)
+    await play_trivia(new_msg, ctx, bot, users)
     
