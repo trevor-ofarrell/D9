@@ -9,13 +9,14 @@ import giphy_client
 from discord.ext.commands import Bot
 import asyncio
 from giphy_client.rest import ApiException
+from trivia import quiz
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 GIF_TOKEN = os.getenv('GIFY_TOKEN') 
 
-bot = commands.Bot(command_prefix=['d9 ', 'D9 '], help_command=None)
+bot = commands.Bot(command_prefix=['d9 ', 'D9 ', 'd9', 'D9', 'the real owo '], help_command=None)
 
 api_instance = giphy_client.DefaultApi()
 
@@ -27,11 +28,9 @@ async def get_all_users(ctx):
 			l.append(member)
 	await ctx.send(l)
 
-obama = ['Barack Obama', 'barack obama']
-
-def obama_check(message):
+def obama_check(args, message):
     content = message.content.lower()
-    return any(t in content for t in obama)
+    return any(t in content for t in args)
 
 @bot.command()
 async def test(ctx):
@@ -40,34 +39,7 @@ async def test(ctx):
     await asyncio.sleep(5)
     users = []
     cache_msg = discord.utils.get(bot.cached_messages, id=msg.id)
-    for reaction in cache_msg.reactions:
-        async for user in reaction.users():
-            users.append(user)
-    new_msg = await ctx.send(":books: :books: :books: :books: :books: :books: :books: :books: :books:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content=":books: :books: :books: :books: :books: :books: :books: :books:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content=":books: :books: :books: :books: :books: :books: :books:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content=":books: :books: :books: :books: :books: :books:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content=":books: :books: :books: :books: :books:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content=":books: :books: :books: :books:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content=":books: :books: :books:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content=":books: :books:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content=":books:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content=":confetti_ball: Game Starting!! :confetti_ball:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content="Who is the 44th president of the United States?")
-    msg = await bot.wait_for('message', check=obama_check)
-    if msg:
-        await msg.add_reaction('✅')
-        await ctx.send(str(msg.author.name) + "wins this one")
+    await quiz(ctx, cache_msg, bot)
 
 @bot.command()
 async def help(ctx):
@@ -78,7 +50,6 @@ async def help(ctx):
     em.add_field(name="Fun", value="8ball")
     em.add_field(name="Economy", value="balance, send")
     em.add_field(name="Gifs", value="Usage: d9 !gif <whatever you want a gif of>")
-
 
 @bot.command()
 async def echo(ctx, *args):
