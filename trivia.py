@@ -15,12 +15,12 @@ triv_str = ""
 reacted = []
 
 def get_trivia():
-    r = requests.get('https://opentdb.com/api.php?amount=15')
+    r = requests.get('https://opentdb.com/api.php?amount=1')
     with open("trivia_questions.json", 'r') as f:
         trivia = json.load(f)
     qs = trivia["items"]
     new_list = r.json()['results']
-    ret = new_list + random.sample(qs, 5)
+    ret = new_list + random.sample(qs, 1)
     random.shuffle(ret)
     print(ret, flush=True)
     return ret
@@ -172,15 +172,21 @@ async def play_trivia(new_msg, ctx, bot, users):
                     await msg.add_reaction("\N{SPORTS MEDAL}")
                     await ctx.send(str(msg.author.name) + "wins this one!")
                 winner = msg.author.name
-                if winners[winner]:
-                    winners[winner] += 1
-                else:
+                try:
+                    if winners[winner]:
+                        winners[winner] += 1
+                except KeyError:
                     winners.update({winner : 1})
                 await asyncio.sleep(2)
     
-    champ = max(winners, key= lambda x: winners[x])
-    print(winners, flush=True)
-    await ctx.send(str(champ) + "Wins the Game! Congrats! :trophy:")
+    high = max(map(lambda x: winners[x], winners))
+    result = [k for k,v in winners.items() if v == high]
+    print(result, flush=True)
+    if len(result) == 1:
+        result = result[0]        
+        await ctx.send(str(result) + "Wins the Game! Congrats! :trophy:")
+    else:
+        await ctx.send(', '.join([str(elem) for elem in result]) + "Tied! Congrats! :trophy:")
 
 def check(message):
     content = message.content.lower()
