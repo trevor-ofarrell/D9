@@ -10,21 +10,23 @@ import pprint
 from parser import parser
 from w3lib.html import replace_entities
 
-triv = ""
+triv = []
+triv_str = ""
 reacted = []
 
 def get_trivia():
     r = requests.get('https://opentdb.com/api.php?amount=10')
-    print(r.json()['results'], flush=True)
     with open("trivia_questions.json", 'r') as f:
         trivia = json.load(f)
     qs = trivia["items"]
-    print(qs, flush=True)
     new_list = r.json()['results']
-    random.shuffle(new_list)
-    return new_list
+    ret = new_list + random.sample(qs, 10)
+    random.shuffle(ret)
+    print(ret, flush=True)
+    return ret
 
 async def play_trivia(new_msg, ctx, bot, users):
+    global triv, reacted, triv_str
     data = get_trivia()
     random.shuffle(data)
     flag = 0
@@ -41,16 +43,12 @@ async def play_trivia(new_msg, ctx, bot, users):
                         flag += 1
                         processed_question = replace_entities(q)
                         await new_msg.edit(content=processed_question)
-                        print(ia, flush=True)
-                        print(a, flush=True)
                         ia += [a]
                         random.shuffle(ia)
                         em = discord.Embed(title = 'Multiple Choice! Type one answer in chat!', color=discord.Color.green())
                         em.add_field(name="Answers:", value="1) {} 2) {} 3) {} 4) {}".format(ia[0], ia[1], ia[2], ia[3]))
                         await ctx.send(embed=em)
-                        global triv, reacted
-                        triv = a.lower()
-                        print(triv, flush=True)
+                        triv_str = a.lower()
                         reacted = users
                         msg = await bot.wait_for('message', check=check_str)
                         if msg:
@@ -69,8 +67,8 @@ async def play_trivia(new_msg, ctx, bot, users):
                         await new_msg.edit(content=processed_question)
                         em = discord.Embed(title = 'True or false! type your selection in the chat!', color=discord.Color.green())
                         await ctx.send(embed=em)
-                        triv = a.lower()
-                        print(triv, flush=True)
+                        triv_str = a.lower()
+                        print(triv_str, flush=True)
                         msg = await bot.wait_for('message', check=check_str)
                         print("waiting.......", flush=True)
                         if msg:
@@ -84,27 +82,25 @@ async def play_trivia(new_msg, ctx, bot, users):
                                 winners.update({winner : 1})
                         await asyncio.sleep(2)
             except KeyError:
-                pass
-            try:
-                if not item['type']:
-                    q = item['q']
-                    a = item['a']
-                    flag += 1
-                    await new_msg.edit(content=q)
-                    print(triv, flush=True)
-                    msg = await bot.wait_for('message', check=check)
-                    if msg:
-                        await msg.add_reaction("\N{SPORTS MEDAL}")
-                        await ctx.send(str(msg.author.name) + "wins this one!")
-                        winner = msg.author.name
-                        try:
-                            if winners[winner]:
-                                winners[winner] += 1
-                        except KeyError:
-                            winners.update({winner : 1})
-                    await asyncio.sleep(2)
-            except KeyError:
-                pass
+                q = item['q']
+                a = item['a']
+                flag += 1
+                await new_msg.edit(content=q)
+                reacted = users
+                triv = [x.lower() for x in a]
+                print(triv, flush=True)
+                msg = await bot.wait_for('message', check=check)
+                if msg:
+                    await msg.add_reaction("\N{SPORTS MEDAL}")
+                    await ctx.send(str(msg.author.name) + "wins this one!")
+                    winner = msg.author.name
+                    try:
+                        if winners[winner]:
+                            winners[winner] += 1
+                    except KeyError:
+                        winners.update({winner : 1})
+                await asyncio.sleep(2)
+
         else:
             try:
                 if item['type']:
@@ -121,8 +117,9 @@ async def play_trivia(new_msg, ctx, bot, users):
                         em = discord.Embed(title = 'Multiple Choice! Type one answer in chat!', color=discord.Color.green())
                         em.add_field(name="Answers:", value="1) {} 2) {} 3) {} 4) {}".format(ia[0], ia[1], ia[2], ia[3]))
                         await ctx.send(embed=em)
-                        triv = a.lower()
-                        print(triv, flush=True)
+                        triv_str = a.lower()
+                        reacted = users
+                        print(triv_str, flush=True)
                         msg = await bot.wait_for('message', check=check_str)
                         if msg:
                             await msg.add_reaction("\N{SPORTS MEDAL}")
@@ -140,8 +137,8 @@ async def play_trivia(new_msg, ctx, bot, users):
                         await ctx.send(processed_question)
                         em = discord.Embed(title = 'True or false! type your selection in the chat!', color=discord.Color.green())
                         await ctx.send(embed=em)
-                        triv = a.lower()
-                        print(triv, flush=True)
+                        triv_str = a.lower()
+                        print(triv_str, flush=True)
                         msg = await bot.wait_for('message', check=check_str)
                         if msg:
                             await msg.add_reaction("\N{SPORTS MEDAL}")
@@ -154,26 +151,22 @@ async def play_trivia(new_msg, ctx, bot, users):
                                 winners.update({winner : 1})
                         await asyncio.sleep(2)
             except KeyError:
-                pass
-            try:
-                if not item["type"]:
-                    q = item['q']
-                    a = item['a']
-                    flag += 1
-                    await ctx.send(q)
-                    triv = a.lower()
-                    msg = await bot.wait_for('message', check=check)
-                    if msg:
-                        await msg.add_reaction("\N{SPORTS MEDAL}")
-                        await ctx.send(str(msg.author.name) + "wins this one!")
-                    winner = msg.author.name
-                    if winners[msg.author.name]:
-                        winners[msg.author.name] += 1
-                    else:
-                        winners.update({winner : 1})
-                    await asyncio.sleep(2)
-            except KeyError:
-                pass
+                q = item['q']
+                a = item['a']
+                flag += 1
+                await ctx.send(q)
+                reacted = users
+                triv = [x.lower() for x in a]
+                msg = await bot.wait_for('message', check=check)
+                if msg:
+                    await msg.add_reaction("\N{SPORTS MEDAL}")
+                    await ctx.send(str(msg.author.name) + "wins this one!")
+                winner = msg.author.name
+                if winners[msg.author.name]:
+                    winners[msg.author.name] += 1
+                else:
+                    winners.update({winner : 1})
+                await asyncio.sleep(2)
     
     champ = max(winners, key= lambda x: winners[x])
     await ctx.send(str(champ) + "Wins the Game! Congrats! :trophy:")
@@ -181,14 +174,19 @@ async def play_trivia(new_msg, ctx, bot, users):
 def check(message):
     content = message.content.lower()
     if message.author in reacted:
+        print(triv, flush=True)
         if content in triv: 
+            return True
+        elif content == triv[0]:
+            print(triv, flush=True)
             return True
         return False
 
 def check_str(message):
     content = message.content.lower()
     if message.author in reacted:
-        if content == triv:
+        print(triv_str, flush=True)
+        if content == triv_str:
             print(triv, flush=True)
             return True
         else:
