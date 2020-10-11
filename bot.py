@@ -20,13 +20,16 @@ bot = commands.Bot(command_prefix=['d9 ', 'D9 ', 'd9', 'D9', 'the real owo '], h
 
 api_instance = giphy_client.DefaultApi()
 
+intents = discord.Intents.default()
+intents.members = True
+
 @bot.command()
 async def get_all_users(ctx):
-	for guild in bot.guilds:
-		for member in guild.members:
-			l = []
-			l.append(member)
-	await ctx.send(l)
+    l = []
+    for guild in bot.guilds:
+        for member in guild.members:
+            l.append(member)
+    await ctx.send(l)
 
 @bot.command()
 async def quiz(ctx):

@@ -15,18 +15,19 @@ triv_str = ""
 reacted = []
 
 def get_trivia():
-    r = requests.get('https://opentdb.com/api.php?amount=10')
+    r = requests.get('https://opentdb.com/api.php?amount=15')
     with open("trivia_questions.json", 'r') as f:
         trivia = json.load(f)
     qs = trivia["items"]
     new_list = r.json()['results']
-    ret = new_list + random.sample(qs, 10)
+    ret = new_list + random.sample(qs, 5)
     random.shuffle(ret)
     print(ret, flush=True)
     return ret
 
 async def play_trivia(new_msg, ctx, bot, users):
     global triv, reacted, triv_str
+    reacted = users
     data = get_trivia()
     random.shuffle(data)
     flag = 0
@@ -42,14 +43,18 @@ async def play_trivia(new_msg, ctx, bot, users):
                     if cat == "multiple":
                         flag += 1
                         processed_question = replace_entities(q)
-                        await new_msg.edit(content=processed_question)
                         ia += [a]
                         random.shuffle(ia)
-                        em = discord.Embed(title = 'Multiple Choice! Type one answer in chat!', color=discord.Color.green())
-                        em.add_field(name="Answers:", value="1) {} 2) {} 3) {} 4) {}".format(ia[0], ia[1], ia[2], ia[3]))
+                        em = discord.Embed(title = processed_question, color=discord.Color.green())
+                        em.add_field(name= "Multiple Choice! Type one answer in chat!", value= "Answers: 1) {} 2) {} 3) {} 4) {}".format(
+                            replace_entities(ia[0]),
+                            replace_entities(ia[1]),
+                            replace_entities(ia[2]),
+                            replace_entities(ia[3])
+                        ))
                         await ctx.send(embed=em)
-                        triv_str = a.lower()
-                        reacted = users
+                        triv_str = replace_entities(a.lower())
+                        print(triv_str, flush=True)
                         msg = await bot.wait_for('message', check=check_str)
                         if msg:
                             await msg.add_reaction("\N{SPORTS MEDAL}")
@@ -64,8 +69,8 @@ async def play_trivia(new_msg, ctx, bot, users):
                     elif cat == "boolean":
                         flag += 1
                         processed_question = replace_entities(q)
-                        await new_msg.edit(content=processed_question)
-                        em = discord.Embed(title = 'True or false! type your selection in the chat!', color=discord.Color.green())
+                        em = discord.Embed(title = processed_question, color=discord.Color.green())
+                        em.add_field(name = 'True or false! type your selection in the chat!', value='** **')
                         await ctx.send(embed=em)
                         triv_str = a.lower()
                         print(triv_str, flush=True)
@@ -85,10 +90,11 @@ async def play_trivia(new_msg, ctx, bot, users):
                 q = item['q']
                 a = item['a']
                 flag += 1
-                await new_msg.edit(content=q)
-                reacted = users
                 triv = [x.lower() for x in a]
                 print(triv, flush=True)
+                em = discord.Embed(title = q, color=discord.Color.green())
+                em.add_field(name = 'Uh oh! No list of answers this time! type your answer in the chat!', value='** **')
+                await ctx.send(embed=em)
                 msg = await bot.wait_for('message', check=check)
                 if msg:
                     await msg.add_reaction("\N{SPORTS MEDAL}")
@@ -111,14 +117,17 @@ async def play_trivia(new_msg, ctx, bot, users):
                     if cat == "multiple":
                         flag += 1
                         processed_question = replace_entities(q)
-                        await ctx.send(processed_question)
                         ia += [a]
                         random.shuffle(ia)
-                        em = discord.Embed(title = 'Multiple Choice! Type one answer in chat!', color=discord.Color.green())
-                        em.add_field(name="Answers:", value="1) {} 2) {} 3) {} 4) {}".format(ia[0], ia[1], ia[2], ia[3]))
+                        em = discord.Embed(title = processed_question, color=discord.Color.green())
+                        em.add_field(name= "Multiple Choice! Type one answer in chat!", value= "Answers: 1) {} 2) {} 3) {} 4) {}".format(
+                            replace_entities(ia[0]),
+                            replace_entities(ia[1]),
+                            replace_entities(ia[2]),
+                            replace_entities(ia[3])
+                        ))
                         await ctx.send(embed=em)
-                        triv_str = a.lower()
-                        reacted = users
+                        triv_str = replace_entities(a.lower())
                         print(triv_str, flush=True)
                         msg = await bot.wait_for('message', check=check_str)
                         if msg:
@@ -134,8 +143,8 @@ async def play_trivia(new_msg, ctx, bot, users):
                     elif cat == "boolean":
                         flag += 1
                         processed_question = replace_entities(q)
-                        await ctx.send(processed_question)
-                        em = discord.Embed(title = 'True or false! type your selection in the chat!', color=discord.Color.green())
+                        em = discord.Embed(title = processed_question, color=discord.Color.green())
+                        em.add_field(name = 'True or false! type your selection in the chat!', value='** **')
                         await ctx.send(embed=em)
                         triv_str = a.lower()
                         print(triv_str, flush=True)
@@ -154,21 +163,23 @@ async def play_trivia(new_msg, ctx, bot, users):
                 q = item['q']
                 a = item['a']
                 flag += 1
-                await ctx.send(q)
-                reacted = users
                 triv = [x.lower() for x in a]
+                em = discord.Embed(title = q, color=discord.Color.green())
+                em.add_field(name = 'Uh oh! No list of answers this time! type your answer in the chat!', value='** **')
+                await ctx.send(embed=em)
                 msg = await bot.wait_for('message', check=check)
                 if msg:
                     await msg.add_reaction("\N{SPORTS MEDAL}")
                     await ctx.send(str(msg.author.name) + "wins this one!")
                 winner = msg.author.name
-                if winners[msg.author.name]:
-                    winners[msg.author.name] += 1
+                if winners[winner]:
+                    winners[winner] += 1
                 else:
                     winners.update({winner : 1})
                 await asyncio.sleep(2)
     
     champ = max(winners, key= lambda x: winners[x])
+    print(winners, flush=True)
     await ctx.send(str(champ) + "Wins the Game! Congrats! :trophy:")
 
 def check(message):
@@ -193,11 +204,6 @@ def check_str(message):
             return False
 
 async def start_quiz(ctx, cache_msg, bot):
-    for reaction in cache_msg.reactions:
-            async for user in reaction.users():
-                users = []
-                users.append(user)
-    print(users, flush=True)
     new_msg = await ctx.send(":books: :books: :books: :books: :books: :books: :books: :books: :books: :books:")
     await asyncio.sleep(1)
     await new_msg.edit(content=":books: :books: :books: :books: :books: :books: :books: :books: :books:")
@@ -218,6 +224,13 @@ async def start_quiz(ctx, cache_msg, bot):
     await asyncio.sleep(1)
     await new_msg.edit(content=":books:")
     await asyncio.sleep(1)
+    channel = cache_msg.channel
+    updated_msg = await channel.fetch_message(cache_msg.id)
+    users = []
+    for reaction in updated_msg.reactions:
+        async for user in reaction.users():
+            users.append(user)
+    print(users, flush=True)
     await new_msg.edit(content=":confetti_ball: Game Starting!! :confetti_ball:")
     await asyncio.sleep(1)
     await play_trivia(new_msg, ctx, bot, users)
