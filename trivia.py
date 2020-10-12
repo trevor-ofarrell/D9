@@ -13,6 +13,7 @@ triv_str = ""
 triv = []
 reacted = []
 multi_choice = []
+submited = []
 
 def get_trivia():
     r = requests.get('https://opentdb.com/api.php?amount=18')
@@ -29,7 +30,7 @@ def get_trivia():
 
 async def play_trivia(new_msg, ctx, bot, users):
 
-    global triv, reacted, triv_str, multi_choice
+    global triv, reacted, triv_str, multi_choice, submited
     reacted = users
     data = get_trivia()
     random.shuffle(data)
@@ -37,6 +38,7 @@ async def play_trivia(new_msg, ctx, bot, users):
 
     for item in data:
         msg = None
+        submited = []
         try:
             if item['type']:
                 q = item['question']
@@ -74,7 +76,8 @@ async def play_trivia(new_msg, ctx, bot, users):
                     print(triv, flush=True)
 
                     try:
-                        msg = await bot.wait_for('message', check=check, timeout=8.0)
+                        msg = await bot.wait_for('message', check=check, timeout=10.0)
+                        submited.append(msg.author.name)
                     except asyncio.TimeoutError:
                         await ctx.send("Time's up!")
 
@@ -103,7 +106,7 @@ async def play_trivia(new_msg, ctx, bot, users):
                     print(triv_str, flush=True)
 
                     try:
-                        msg = await bot.wait_for('message', check=check_str, timeout=8.0)
+                        msg = await bot.wait_for('message', check=check_str, timeout=10.0)
                     except asyncio.TimeoutError:
                         await ctx.send("Time's up!")
 
@@ -134,7 +137,7 @@ async def play_trivia(new_msg, ctx, bot, users):
             await ctx.send(embed=em)
 
             try:
-                msg = await bot.wait_for('message', check=check, timeout=8.0)
+                msg = await bot.wait_for('message', check=check, timeout=10.0)
             except asyncio.TimeoutError:
                 await ctx.send("Time's up!")
             
@@ -168,19 +171,25 @@ async def play_trivia(new_msg, ctx, bot, users):
 def check(message):
     content = message.content.lower()
     if message.author in reacted:
-        if content in triv: 
-            return True
-        elif content == triv[0]:
-            return True
+        if message.author.name not in submited:
+            submited.append(message.author.name)
+            if content in triv: 
+                return True
+            elif content == triv[0]:
+                return True
+            return False
         return False
 
 def check_str(message):
     content = message.content.lower()
     if message.author in reacted:
-        if content == triv_str:
-            return True
-        else:
-            return False
+        if message.author.name not in submited:
+            submited.append(message.author.name)
+            if content == triv_str:
+                return True
+            else:
+                return False
+        return False
 
 async def start_quiz(ctx, cache_msg, bot):
 
