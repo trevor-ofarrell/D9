@@ -22,7 +22,6 @@ def get_trivia():
     new_list = r.json()['results']
     ret = new_list + random.sample(qs, 3)
     random.shuffle(ret)
-    random.shuffle(ret)
     print(ret, flush=True)
     return ret
 
