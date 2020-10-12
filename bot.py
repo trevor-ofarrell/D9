@@ -16,7 +16,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 GIF_TOKEN = os.getenv('GIFY_TOKEN') 
 
-bot = commands.Bot(command_prefix=['d9 ', 'D9 ', 'd9', 'D9', 'the real owo '])
+bot = commands.Bot(command_prefix=['d9 ', 'D9 ', 'd9', 'D9'])
 
 api_instance = giphy_client.DefaultApi()
 
