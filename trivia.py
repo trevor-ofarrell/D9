@@ -15,12 +15,14 @@ reacted = []
 multi_choice = []
 
 def get_trivia():
-    r = requests.get('https://opentdb.com/api.php?amount=17')
+    r = requests.get('https://opentdb.com/api.php?amount=18')
+
     with open("trivia_questions.json", 'r') as f:
         trivia = json.load(f)
+
     qs = trivia["items"]
     new_list = r.json()['results']
-    ret = new_list + random.sample(qs, 3)
+    ret = new_list + random.sample(qs, 2)
     random.shuffle(ret)
     print(ret, flush=True)
     return ret
@@ -123,7 +125,7 @@ async def play_trivia(new_msg, ctx, bot, users):
             msg = await bot.wait_for('message', check=check)
             if msg:
                 await msg.add_reaction("\N{SPORTS MEDAL}")
-                await ctx.send(str(msg.author.name) + "wins this one!")
+                await ctx.send(str(msg.author.name) + " wins this one!")
                 winner = msg.author.name
                 try:
                     if winners[winner]:
@@ -138,7 +140,7 @@ async def play_trivia(new_msg, ctx, bot, users):
 
     if len(result) == 1:
         result = result[0]        
-        await ctx.send(str(result) + "Wins the Game! Congrats! :trophy:")
+        await ctx.send(str(result) + " Wins the Game! Congrats! :trophy:")
     else:
         await ctx.send(', '.join([str(elem) for elem in result]) + " Tied! Congrats! :trophy:")
 
@@ -162,7 +164,8 @@ def check_str(message):
             return False
 
 async def start_quiz(ctx, cache_msg, bot):
-    new_msg = await ctx.send(":books: :books: :books: :books: :books: :books: :books:")
+
+    new_msg = await ctx.send(":books: :books: :books: :books: :books: :books: :books:", delete_after=20)
     await asyncio.sleep(1)
     await new_msg.edit(content=":books: :books: :books: :books: :books: :books:")
     await asyncio.sleep(1)
@@ -176,12 +179,15 @@ async def start_quiz(ctx, cache_msg, bot):
     await asyncio.sleep(1)
     await new_msg.edit(content=":books:")
     await asyncio.sleep(1)
+
+    users = []
     channel = cache_msg.channel
     updated_msg = await channel.fetch_message(cache_msg.id)
-    users = []
+
     for reaction in updated_msg.reactions:
         async for user in reaction.users():
             users.append(user)
+
     print(users, flush=True)
     await new_msg.edit(content=":confetti_ball: Game Starting!! :confetti_ball:")
     await asyncio.sleep(1)
