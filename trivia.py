@@ -114,7 +114,10 @@ async def play_trivia(new_msg, ctx, bot, users):
             triv = [x.lower() for x in a]
             print(triv, flush=True)
             em = discord.Embed(title = q, color=discord.Color.green())
-            em.add_field(name = 'Uh oh! No list of answers this time! type your answer in the chat!', value='** **')
+            em.add_field(
+                name='Uh oh! No list of answers this time! type your answer in the chat!',
+                value='** **'
+            )
             await ctx.send(embed=em)
  
             msg = await bot.wait_for('message', check=check)
@@ -159,13 +162,7 @@ def check_str(message):
             return False
 
 async def start_quiz(ctx, cache_msg, bot):
-    new_msg = await ctx.send(":books: :books: :books: :books: :books: :books: :books: :books: :books: :books:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content=":books: :books: :books: :books: :books: :books: :books: :books: :books:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content=":books: :books: :books: :books: :books: :books: :books: :books:")
-    await asyncio.sleep(1)
-    await new_msg.edit(content=":books: :books: :books: :books: :books: :books: :books:")
+    new_msg = await ctx.send(":books: :books: :books: :books: :books: :books: :books:")
     await asyncio.sleep(1)
     await new_msg.edit(content=":books: :books: :books: :books: :books: :books:")
     await asyncio.sleep(1)
