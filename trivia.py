@@ -15,7 +15,7 @@ reacted = []
 multi_choice = []
 
 def get_trivia():
-    r = requests.get('https://opentdb.com/api.php?amount=18')
+    r = requests.get('https://opentdb.com/api.php?amount=19')
 
     with open("trivia_questions.json", 'r') as f:
         trivia = json.load(f)
