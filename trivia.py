@@ -15,7 +15,7 @@ reacted = []
 multi_choice = []
 
 def get_trivia():
-    r = requests.get('https://opentdb.com/api.php?amount=18')
+    r = requests.get('https://opentdb.com/api.php?amount=2')
 
     with open("trivia_questions.json", 'r') as f:
         trivia = json.load(f)
@@ -37,6 +37,7 @@ async def play_trivia(new_msg, ctx, bot, users):
     winners = {}
 
     for item in data:
+        msg = None
         try:
             if item['type']:
                 q = item['question']
@@ -74,19 +75,25 @@ async def play_trivia(new_msg, ctx, bot, users):
                             triv.append(list(item.keys())[0])
                     print(triv, flush=True)
 
-                    msg = await bot.wait_for('message', check=check)
+                    try:
+                        msg = await bot.wait_for('message', check=check, timeout=8.0)
+                    except asyncio.TimeoutError:
+                        await ctx.send("Time's up!")
 
-                    if msg:
-                        await msg.add_reaction("\N{SPORTS MEDAL}")
-                        await ctx.send(str(msg.author.name) + "wins this one!")
-                        winner = msg.author.name
+                    try:
+                        if msg:
+                            await msg.add_reaction("\N{SPORTS MEDAL}")
+                            await ctx.send(str(msg.author.name) + "wins this one!")
+                            winner = msg.author.name
 
-                        try:
-                            if winners[winner]:
-                                winners[winner] += 1
-                        except KeyError:
-                            winners.update({winner : 1})
-                    await asyncio.sleep(2)
+                            try:
+                                if winners[winner]:
+                                    winners[winner] += 1
+                            except KeyError:
+                                winners.update({winner : 1})
+                        await asyncio.sleep(2)
+                    except UnboundLocalError:
+                        pass
 
                 elif cat == "boolean":
                     flag += 1
@@ -97,17 +104,25 @@ async def play_trivia(new_msg, ctx, bot, users):
 
                     triv_str = a.lower()
                     print(triv_str, flush=True)
-                    msg = await bot.wait_for('message', check=check_str)
-                    if msg:
-                        await msg.add_reaction("\N{SPORTS MEDAL}")
-                        await ctx.send(str(msg.author.name) + "wins this one!")
-                        winner = msg.author.name
-                        try:
-                            if winners[winner]:
-                                winners[winner] += 1
-                        except KeyError:
-                            winners.update({winner : 1})
-                    await asyncio.sleep(2)
+
+                    try:
+                        msg = await bot.wait_for('message', check=check_str, timeout=8.0)
+                    except asyncio.TimeoutError:
+                        await ctx.send("Time's up!")
+
+                    try:
+                        if msg:
+                            await msg.add_reaction("\N{SPORTS MEDAL}")
+                            await ctx.send(str(msg.author.name) + "wins this one!")
+                            winner = msg.author.name
+                            try:
+                                if winners[winner]:
+                                    winners[winner] += 1
+                            except KeyError:
+                                winners.update({winner : 1})
+                        await asyncio.sleep(2)
+                    except UnboundLocalError:
+                        pass
 
         except KeyError:
             q = item['q']
@@ -121,28 +136,41 @@ async def play_trivia(new_msg, ctx, bot, users):
                 value='** **'
             )
             await ctx.send(embed=em)
- 
-            msg = await bot.wait_for('message', check=check)
-            if msg:
-                await msg.add_reaction("\N{SPORTS MEDAL}")
-                await ctx.send(str(msg.author.name) + " wins this one!")
-                winner = msg.author.name
-                try:
-                    if winners[winner]:
-                        winners[winner] += 1
-                except KeyError:
-                    winners.update({winner : 1})
-            await asyncio.sleep(2)
 
-    high = max(map(lambda x: winners[x], winners))
-    result = [k for k,v in winners.items() if v == high]
-    print(result, flush=True)
+            try:
+                msg = await bot.wait_for('message', check=check, timeout=8.0)
+            except asyncio.TimeoutError:
+                await ctx.send("Time's up!")
+            
+            try:
+                if msg:
+                    await msg.add_reaction("\N{SPORTS MEDAL}")
+                    await ctx.send(str(msg.author.name) + " wins this one!")
+                    winner = msg.author.name
+                    try:
+                        if winners[winner]:
+                            winners[winner] += 1
+                    except KeyError:
+                        winners.update({winner : 1})
+                await asyncio.sleep(2)
+            except UnboundLocalError:
+                pass
 
-    if len(result) == 1:
-        result = result[0]        
-        await ctx.send(str(result) + " Wins the Game! Congrats! :trophy:")
-    else:
-        await ctx.send(', '.join([str(elem) for elem in result]) + " Tied! Congrats! :trophy:")
+    try:
+        high = max(map(lambda x: winners[x], winners))
+        result = [k for k,v in winners.items() if v == high]
+        print(result, flush=True)
+
+        if len(result) == 1:
+            result = result[0]        
+            await ctx.send(str(result) + " Wins the Game! Congrats! :trophy:")
+        else:
+            await ctx.send(', '.join([str(elem) for elem in result]) + " Tied! Congrats! :trophy:")
+    except ValueError:
+        await ctx.send("No one wins! boooo")
+
+
+    
 
 def check(message):
     content = message.content.lower()
