@@ -29,6 +29,7 @@ async def get_all_users(ctx):
     for guild in bot.guilds:
         for member in guild.members:
             l.append(member)
+
     await ctx.send(l, delete_after=10)
 
 @bot.command()
@@ -172,8 +173,11 @@ async def beg(ctx):
     users = await get_eco_data()
     user = ctx.author
     earnings = random.randrange(10)
-    await ctx.send(f"Someone gave you {earnings} d9's!!!! WOooooaoOoHhhhhwwWAAAaaaaaa")
+    await ctx.send(
+        f"Someone gave you {earnings} d9's!!!! WOooooaoOoHhhhhwwWAAAaaaaaa"
+    )
     users[str(user.id)]["wallet"] += earnings
+
     with open("usereconomydata.json", "w") as f:
         json.dump(users, f)   
 
@@ -186,19 +190,24 @@ async def gamble(ctx, arg=1):
     if arg > users[str(user.id)]["wallet"]:
         wallet_amt = users[str(user.id)]["wallet"]
         await ctx.send('Sorry, you only have {} d9\'s :\'('.format(wallet_amt))
+
     else:
         if flip == 'win':
             users[str(user.id)]["wallet"] += int(arg)
+
             with open("usereconomydata.json", "w") as f:
                 json.dump(users, f)
-            em = discord.Embed(title = f"{ctx.author.name} won {arg} d9's!!!", color=discord.Color.green())
+
+            em = discord.Embed(title=f"{ctx.author.name} won {arg} d9's!!!", color=discord.Color.green())
             await ctx.send(embed=em)
 
         else:
             users[str(user.id)]["wallet"] -= int(arg)
+
             with open("usereconomydata.json", "w") as f:
                 json.dump(users, f)
-            em = discord.Embed(title = f"{ctx.author.name} lost {arg} d9's :'(", color=discord.Color.red())
+
+            em = discord.Embed(title=f"{ctx.author.name} lost {arg} d9's :'(", color=discord.Color.red())
             await ctx.send(embed=em)
             await ctx.send(f"f")
 
@@ -228,17 +237,12 @@ async def account(user):
 
     with open("usereconomydata.json", 'w') as f:
         json.dump(users, f)
+
     return True
 
 async def get_eco_data():
     with open("usereconomydata.json", 'r') as f:
         users = json.load(f)
     return users
-
-async def on_message(message):
-    if message.content == "Barack Obama":
-        await message.add_reaction('✅')
-        await message.edit(content="trevor wins")
-
 
 bot.run(TOKEN)
