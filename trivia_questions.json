@@ -55,7 +55,5 @@
         {"q" : "What's the name of the main protagonist in the 'Legend of Zelda' franchise?", "a" : ["link"]},
         {"q" : "In the 'Shrek' film franchise, Donkey is played by Eddie Murphy.", "a" : ["true"]},
         {"q" : "What type of animal was Harambe, who was shot after a child fell into it's enclosure at the Cincinnati Zoo?", "a" : ["Gorilla"]}
-        
-
     ]
 }
