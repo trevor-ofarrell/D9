@@ -60,15 +60,17 @@ async def play_trivia(new_msg, ctx, bot, users):
                             replace_entities(ia[2]),
                             replace_entities(ia[3])
                     ))
+
                     multi_choice = [
                         {"1" : replace_entities(ia[0])},
                         {"2" : replace_entities(ia[1])},
                         {"3" : replace_entities(ia[2])},
                         {"4" : replace_entities(ia[3])}
                     ]
-                    await ctx.send(embed=em)
 
+                    await ctx.send(embed=em)
                     triv.append(replace_entities(a.lower()))
+
                     for item in multi_choice:
                         ans = list(item.values())[0]
                         if ans.lower() == replace_entities(a.lower()):
@@ -93,6 +95,7 @@ async def play_trivia(new_msg, ctx, bot, users):
                             except KeyError:
                                 winners.update({winner : 1})
                         await asyncio.sleep(2)
+
                     except UnboundLocalError:
                         pass
 
@@ -121,6 +124,7 @@ async def play_trivia(new_msg, ctx, bot, users):
                             except KeyError:
                                 winners.update({winner : 1})
                         await asyncio.sleep(2)
+
                     except UnboundLocalError:
                         pass
 
@@ -129,6 +133,7 @@ async def play_trivia(new_msg, ctx, bot, users):
             a = item['a']
             triv = [x.lower() for x in a]
             print(triv, flush=True)
+
             em = discord.Embed(title = q, color=discord.Color.green())
             em.add_field(
                 name='Uh oh! No list of answers this time! type your answer in the chat!',
@@ -152,6 +157,7 @@ async def play_trivia(new_msg, ctx, bot, users):
                     except KeyError:
                         winners.update({winner : 1})
                 await asyncio.sleep(2)
+
             except UnboundLocalError:
                 pass
 
