@@ -16,7 +16,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 GIF_TOKEN = os.getenv('GIFY_TOKEN') 
 
-bot = commands.Bot(command_prefix=['d9 ', 'D9 ', 'd9', 'D9', 'the real owo '], help_command=None)
+bot = commands.Bot(command_prefix=['d9 ', 'D9 ', 'd9', 'D9', 'the real owo '])
 
 api_instance = giphy_client.DefaultApi()
 
@@ -29,7 +29,7 @@ async def get_all_users(ctx):
     for guild in bot.guilds:
         for member in guild.members:
             l.append(member)
-    await ctx.send(l)
+    await ctx.send(l, delete_after=10)
 
 @bot.command()
 async def quiz(ctx):
@@ -43,7 +43,7 @@ async def quiz(ctx):
     cache_msg = discord.utils.get(bot.cached_messages, id=msg.id)
     await start_quiz(ctx, cache_msg, bot)
 
-@bot.command()
+"""@bot.command()
 async def help(ctx):
     em = discord.Embed(title = 'Command list', color=discord.Color.green())
     em.add_field(name="Actions", value="greet, hug, slap - Usage: d9 !<command> <@username>")
@@ -51,7 +51,7 @@ async def help(ctx):
     em.add_field(name="Flip a coin", value="Usage: d9 !flipcoin")
     em.add_field(name="Fun", value="8ball")
     em.add_field(name="Economy", value="balance, send")
-    em.add_field(name="Gifs", value="Usage: d9 !gif <whatever you want a gif of>")
+    em.add_field(name="Gifs", value="Usage: d9 !gif <whatever you want a gif of>")"""
 
 @bot.command()
 async def echo(ctx, *args):
