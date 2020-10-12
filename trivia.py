@@ -33,7 +33,6 @@ async def play_trivia(new_msg, ctx, bot, users):
     reacted = users
     data = get_trivia()
     random.shuffle(data)
-    flag = 0
     winners = {}
 
     for item in data:
@@ -45,7 +44,6 @@ async def play_trivia(new_msg, ctx, bot, users):
                 ia = item['incorrect_answers']
                 cat = item["type"]
                 if cat == "multiple":
-                    flag += 1
                     triv = []
                     ia += [a]
                     random.shuffle(ia)
@@ -96,7 +94,6 @@ async def play_trivia(new_msg, ctx, bot, users):
                         pass
 
                 elif cat == "boolean":
-                    flag += 1
                     processed_question = replace_entities(q)
                     em = discord.Embed(title = processed_question, color=discord.Color.green())
                     em.add_field(name = 'True or false! type your selection in the chat!', value='** **')
@@ -127,7 +124,6 @@ async def play_trivia(new_msg, ctx, bot, users):
         except KeyError:
             q = item['q']
             a = item['a']
-            flag += 1
             triv = [x.lower() for x in a]
             print(triv, flush=True)
             em = discord.Embed(title = q, color=discord.Color.green())
@@ -169,9 +165,6 @@ async def play_trivia(new_msg, ctx, bot, users):
     except ValueError:
         await ctx.send("No one wins! boooo")
 
-
-    
-
 def check(message):
     content = message.content.lower()
     if message.author in reacted:
@@ -184,9 +177,7 @@ def check(message):
 def check_str(message):
     content = message.content.lower()
     if message.author in reacted:
-        print(triv_str, flush=True)
         if content == triv_str:
-            print(triv, flush=True)
             return True
         else:
             return False
