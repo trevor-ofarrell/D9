@@ -78,7 +78,7 @@ async def play_trivia(new_msg, ctx, bot, users):
                     print(triv, flush=True)
 
                     try:
-                        msg = await bot.wait_for('message', check=check, timeout=10.0)
+                        msg = await bot.wait_for('message', check=check, timeout=16.0)
                         submited.append(msg.author.name)
                     except asyncio.TimeoutError:
                         await ctx.send("Time's up!")
@@ -109,7 +109,7 @@ async def play_trivia(new_msg, ctx, bot, users):
                     print(triv_str, flush=True)
 
                     try:
-                        msg = await bot.wait_for('message', check=check_str, timeout=10.0)
+                        msg = await bot.wait_for('message', check=check_str, timeout=16.0)
                     except asyncio.TimeoutError:
                         await ctx.send("Time's up!")
 
@@ -142,7 +142,7 @@ async def play_trivia(new_msg, ctx, bot, users):
             await ctx.send(embed=em)
 
             try:
-                msg = await bot.wait_for('message', check=check, timeout=10.0)
+                msg = await bot.wait_for('message', check=check, timeout=16.0)
             except asyncio.TimeoutError:
                 await ctx.send("Time's up!")
             
