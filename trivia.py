@@ -36,6 +36,7 @@ async def play_trivia(new_msg, ctx, bot, users):
     random.shuffle(data)
     winners = {}
 
+
     for item in data:
         msg = None
         submited = []
