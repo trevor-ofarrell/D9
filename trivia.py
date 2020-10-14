@@ -52,7 +52,7 @@ async def play_trivia(new_msg, ctx, bot, users):
                     random.shuffle(ia)
                     processed_question = replace_entities(q)
 
-                    em = discord.Embed(title = processed_question, color=discord.Color.green())
+                    em = discord.Embed(title=processed_question, color=discord.Color.green())
                     em.add_field(
                         name="Multiple Choice! Type one answer in chat!",
                         value="Answers: 1) {} 2) {} 3) {} 4) {}".format(
@@ -103,7 +103,7 @@ async def play_trivia(new_msg, ctx, bot, users):
                 elif cat == "boolean":
                     processed_question = replace_entities(q)
                     em = discord.Embed(title = processed_question, color=discord.Color.green())
-                    em.add_field(name = 'True or false! type your selection in the chat!', value='** **')
+                    em.add_field(name='True or false! type your selection in the chat!', value='** **')
                     await ctx.send(embed=em)
 
                     triv_str = a.lower()
@@ -135,7 +135,7 @@ async def play_trivia(new_msg, ctx, bot, users):
             triv = [x.lower() for x in a]
             print(triv, flush=True)
 
-            em = discord.Embed(title = q, color=discord.Color.green())
+            em = discord.Embed(title=q, color=discord.Color.green())
             em.add_field(
                 name='Uh oh! No list of answers this time! type your answer in the chat!',
                 value='** **'

@@ -15,6 +15,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 GIF_TOKEN = os.getenv('GIFY_TOKEN') 
+BOT_OWNER_ID = os.getenv('OWNER')
 
 bot = commands.Bot(command_prefix=['d9 ', 'D9 ', 'd9', 'D9'])
 
@@ -24,13 +25,15 @@ intents = discord.Intents.default()
 intents.members = True
 
 @bot.command()
-async def get_all_users(ctx):
-    l = []
-    for guild in bot.guilds:
-        for member in guild.members:
-            l.append(member)
-
-    await ctx.send(l, delete_after=10)
+async def get(ctx):
+    mb_list = []
+    with open('users.txt','w') as f:
+        async for member in ctx.guild.fetch_members(limit=None):
+            print("{},{}".format(member,member.id), file=f,)
+            mb_list.append(member)
+    print("done")
+    return mb_list
+    #await ctx.send(l, delete_after=10)
 
 @bot.command()
 async def quiz(ctx):
@@ -151,9 +154,9 @@ async def send(ctx, member: discord.Member, amount=1):
     user = ctx.author
     if amount > users[str(user.id)]["wallet"]:
         wallet_amt = users[str(user.id)]["wallet"]
-        await ctx.send('Sorry, you only have {} d9\'s :\'('.format(wallet_amt))
+        await ctx.send('Sorry, you only have {} d9 buck\'s :\'('.format(wallet_amt))
     else:
-        await ctx.send(f"You sent {member.name} {amount} d9's!!")
+        await ctx.send(f"You sent {member.name} {amount} d9 buck's!!")
         users[str(user.id)]["wallet"] -= amount
         try:
           users[str(member.id)]["wallet"] += amount
@@ -168,13 +171,36 @@ async def send(ctx, member: discord.Member, amount=1):
     return True
 
 @bot.command()
+async def send_all(ctx, amount=100):
+
+    if ctx.message.author.guild_permissions.administrator or ctx.message.author.id == int(BOT_OWNER_ID):
+        members = await get(ctx)
+        users = await get_eco_data()
+
+        for member in members:
+
+            if str(member.id) in users:
+                users[str(member.id)]["wallet"] += amount
+
+            else:
+                users[str(member.id)] = {"wallet" : amount, "name": member.name}
+
+            with open("usereconomydata.json", "w") as f:
+                json.dump(users, f)
+
+        await ctx.send("you added " + str(amount) + " d9 buck's to everyone's wallet!")
+
+    else:
+        await ctx.send("you don't have permission to use this command")
+
+@bot.command()
 async def beg(ctx):
     await account(ctx.author)
     users = await get_eco_data()
     user = ctx.author
     earnings = random.randrange(10)
     await ctx.send(
-        f"Someone gave you {earnings} d9's!!!! WOooooaoOoHhhhhwwWAAAaaaaaa"
+        f"Someone gave you {earnings} d9 buck's!!!! WOooooaoOoHhhhhwwWAAAaaaaaa"
     )
     users[str(user.id)]["wallet"] += earnings
 
@@ -189,7 +215,7 @@ async def gamble(ctx, arg=1):
 
     if arg > users[str(user.id)]["wallet"]:
         wallet_amt = users[str(user.id)]["wallet"]
-        await ctx.send('Sorry, you only have {} d9\'s :\'('.format(wallet_amt))
+        await ctx.send('Sorry, you only have {} d9 buck\'s :\'('.format(wallet_amt))
 
     else:
         if flip == 'win':
@@ -198,7 +224,7 @@ async def gamble(ctx, arg=1):
             with open("usereconomydata.json", "w") as f:
                 json.dump(users, f)
 
-            em = discord.Embed(title=f"{ctx.author.name} won {arg} d9's!!!", color=discord.Color.green())
+            em = discord.Embed(title=f"{ctx.author.name} won {arg} d9 buck's!!!", color=discord.Color.green())
             await ctx.send(embed=em)
 
         else:
@@ -207,7 +233,7 @@ async def gamble(ctx, arg=1):
             with open("usereconomydata.json", "w") as f:
                 json.dump(users, f)
 
-            em = discord.Embed(title=f"{ctx.author.name} lost {arg} d9's :'(", color=discord.Color.red())
+            em = discord.Embed(title=f"{ctx.author.name} lost {arg} d9 buck's :'(", color=discord.Color.red())
             await ctx.send(embed=em)
             await ctx.send(f"f")
 
