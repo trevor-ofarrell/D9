@@ -38,7 +38,10 @@ async def get(ctx):
 @bot.command()
 async def quiz(ctx):
     embed = discord.Embed(title = f"Trivia! :nerd:", color=discord.Color.green())
-    embed.add_field(name="Join the Game!", value="Add reaction to play. The quickest to answer wins the point, and the most points wins the round!")
+    embed.add_field(
+        name="Join the Game!",
+        value="Add reaction to play. The quickest to answer wins the point, and the most points wins the round!"
+    )
     embed.set_image(url="https://media.giphy.com/media/3ohs7Xldjh7DndQnBu/giphy.gif")
     msg = await ctx.send(embed=embed)
     await msg.add_reaction('✅')
@@ -46,16 +49,6 @@ async def quiz(ctx):
     users = []
     cache_msg = discord.utils.get(bot.cached_messages, id=msg.id)
     await start_quiz(ctx, cache_msg, bot)
-
-"""@bot.command()
-async def help(ctx):
-    em = discord.Embed(title = 'Command list', color=discord.Color.green())
-    em.add_field(name="Actions", value="greet, hug, slap - Usage: d9 !<command> <@username>")
-    em.add_field(name="Gamble", value="Usage: d9 !gamble 100")
-    em.add_field(name="Flip a coin", value="Usage: d9 !flipcoin")
-    em.add_field(name="Fun", value="8ball")
-    em.add_field(name="Economy", value="balance, send")
-    em.add_field(name="Gifs", value="Usage: d9 !gif <whatever you want a gif of>")"""
 
 @bot.command()
 async def echo(ctx, *args):
@@ -72,63 +65,6 @@ async def gif(ctx, arg):
         await ctx.send('You must specify an argument!')
     gify = await search_gifs(arg)
     await ctx.send(gify)
-
-@bot.command()
-async def slap(ctx, members: commands.Greedy[discord.Member], *, reason='no reason'):
-    slapped = ", ".join(x.name for x in members)
-    slap_urls = [
-        "https://media.giphy.com/media/l3YSimA8CV1k41b1u/giphy.gif",
-        "https://media.giphy.com/media/RrLbvyvatbi36/giphy.gif",
-        "https://media.giphy.com/media/lX03hULhgCYQ8/giphy.gif",
-        "https://media.giphy.com/media/Qvwc79OfQOa4g/giphy.gif",
-        "https://media.giphy.com/media/Qs0I2VdbIqNkk/giphy.gif",
-    ]
-    this_slap = random.choices(slap_urls)
-    em = discord.Embed(title = '{} just got slapped for {}'.format(slapped, reason), color=discord.Color.red())
-    em.set_image(url=this_slap[0])
-    await ctx.send(embed=em)
-
-@bot.command()
-async def hug(ctx, members: commands.Greedy[discord.Member]):
-    hugged = ", ".join(x.name for x in members)
-    hug_urls = [
-        "https://media.giphy.com/media/EvYHHSntaIl5m/giphy.gif",
-        "https://media.giphy.com/media/ZBQhoZC0nqknSviPqT/giphy.gif",
-        "https://media.giphy.com/media/gnXG2hODaCOru/giphy.gif",
-        "https://media.giphy.com/media/16bJmyPvRbCDu/giphy.gif",
-        "https://media.giphy.com/media/VbawWIGNtKYwOFXF7U/giphy.gif",
-        "https://media.giphy.com/media/VduFvPwm3gfGO8duNN/giphy.gif",
-        "https://media.giphy.com/media/l41lSTVB8eei3U3hC/giphy.gif",
-        "https://media.giphy.com/media/hpQcDH5EfJRwxm03Uh/giphy.gif",
-    ]
-    this_hug = random.choices(hug_urls)
-    em = discord.Embed(title = '{} hugs {}! <3 '.format(ctx.author.name, hugged), color=discord.Color.dark_purple())
-    em.set_image(url=this_hug[0])
-    await ctx.send(embed=em)   
-
-@bot.command(aliases=['8ball'])
-async def _8ball(ctx, *, question):
-    responses = [
-        "Not today mf",
-        "Sure!",
-        "forget about it",
-        "not in a million years",
-        "most likley, yes",
-        "you wouldn't belive me if I told you",
-        "Hmmmm, ask Milly",
-        "Shane knows",
-        "Eric is paying me to withhold this information",
-        "I dont wanna talk",
-        "drainer knows the answer",
-        "Follow you heart",
-        'Without a doubt.', 
-        'Outlook good.', 
-        'Better not tell you now.', 
-        'Cannot predict now.',
-        'My reply is no.', 
-        'Outlook not so good.',
-    ]
-    await ctx.send(f'{random.choice(responses)}') 
 
 @bot.command()
 async def flipcoin(ctx):
@@ -200,7 +136,7 @@ async def beg(ctx):
     user = ctx.author
     earnings = random.randrange(10)
     await ctx.send(
-        f"Someone gave you {earnings} d9 buck's!!!! WOooooaoOoHhhhhwwWAAAaaaaaa"
+        f"Someone gave you {earnings} d9 buck's!!!! Woaahhh"
     )
     users[str(user.id)]["wallet"] += earnings
 
@@ -271,4 +207,72 @@ async def get_eco_data():
         users = json.load(f)
     return users
 
+@bot.command(aliases=['8ball'])
+async def _8ball(ctx, *, question):
+    responses = [
+        "Not today mf",
+        "Sure!",
+        "forget about it",
+        "not in a million years",
+        "most likley, yes",
+        "you wouldn't belive me if I told you",
+        "Hmmmm, ask Milly",
+        "Shane knows",
+        "Eric is paying me to withhold this information",
+        "I dont wanna talk",
+        "drainer knows the answer",
+        "Follow you heart",
+        'Without a doubt.', 
+        'Outlook good.', 
+        'Better not tell you now.', 
+        'Cannot predict now.',
+        'My reply is no.', 
+        'Outlook not so good.',
+    ]
+    await ctx.send(f'{random.choice(responses)}')
+
+@bot.command()
+async def slap(ctx, members: commands.Greedy[discord.Member], *, reason='no reason'):
+    slapped = ", ".join(x.name for x in members)
+    slap_urls = [
+        "https://media.giphy.com/media/l3YSimA8CV1k41b1u/giphy.gif",
+        "https://media.giphy.com/media/RrLbvyvatbi36/giphy.gif",
+        "https://media.giphy.com/media/lX03hULhgCYQ8/giphy.gif",
+        "https://media.giphy.com/media/Qvwc79OfQOa4g/giphy.gif",
+        "https://media.giphy.com/media/Qs0I2VdbIqNkk/giphy.gif",
+    ]
+    this_slap = random.choices(slap_urls)
+    em = discord.Embed(title = '{} just got slapped for {}'.format(slapped, reason), color=discord.Color.red())
+    em.set_image(url=this_slap[0])
+    await ctx.send(embed=em)
+
+@bot.command()
+async def hug(ctx, members: commands.Greedy[discord.Member]):
+    hugged = ", ".join(x.name for x in members)
+    hug_urls = [
+        "https://media.giphy.com/media/EvYHHSntaIl5m/giphy.gif",
+        "https://media.giphy.com/media/ZBQhoZC0nqknSviPqT/giphy.gif",
+        "https://media.giphy.com/media/gnXG2hODaCOru/giphy.gif",
+        "https://media.giphy.com/media/16bJmyPvRbCDu/giphy.gif",
+        "https://media.giphy.com/media/VbawWIGNtKYwOFXF7U/giphy.gif",
+        "https://media.giphy.com/media/VduFvPwm3gfGO8duNN/giphy.gif",
+        "https://media.giphy.com/media/l41lSTVB8eei3U3hC/giphy.gif",
+        "https://media.giphy.com/media/hpQcDH5EfJRwxm03Uh/giphy.gif",
+    ]
+    this_hug = random.choices(hug_urls)
+    em = discord.Embed(title = '{} hugs {}! <3 '.format(ctx.author.name, hugged), color=discord.Color.dark_purple())
+    em.set_image(url=this_hug[0])
+    await ctx.send(embed=em)
+
 bot.run(TOKEN)
+
+
+"""@bot.command()
+async def help(ctx):
+    em = discord.Embed(title = 'Command list', color=discord.Color.green())
+    em.add_field(name="Actions", value="greet, hug, slap - Usage: d9 !<command> <@username>")
+    em.add_field(name="Gamble", value="Usage: d9 !gamble 100")
+    em.add_field(name="Flip a coin", value="Usage: d9 !flipcoin")
+    em.add_field(name="Fun", value="8ball")
+    em.add_field(name="Economy", value="balance, send")
+    em.add_field(name="Gifs", value="Usage: d9 !gif <whatever you want a gif of>")"""
