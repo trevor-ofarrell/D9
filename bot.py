@@ -18,14 +18,35 @@ GUILD = os.getenv('DISCORD_GUILD')
 GIF_TOKEN = os.getenv('GIFY_TOKEN') 
 BOT_OWNER_ID = os.getenv('OWNER')
 
-bot = commands.Bot(command_prefix=['d9 ', 'D9 ', 'd9', 'D9', 'd9 !', 'D9 !', 'd9 $', 'D9 $'])
+intents = discord.Intents.all()
+intents.members = True
+
+bot = commands.Bot(command_prefix=['d9 ', 'D9 ', 'd9', 'D9', 'd9 !', 'D9 !', 'd9 $', 'D9 $'], intents=intents)
 
 bot.add_cog(Admin(bot, BOT_OWNER_ID))
 
 api_instance = giphy_client.DefaultApi()
 
-intents = discord.Intents.default()
-intents.members = True
+@bot.event
+async def on_member_join(member):
+    ment = member.mention
+    print("welcome", flush=True)
+    await bot.get_channel(channel.id).send(f"""Welcome to the server {member.mention}""")
+    
+@bot.event
+async def on_member_join(member):
+    print(f'Recognised that a member called {member} joined')
+    await member.send(".")
+    print('Sent message to ' + member.name)
+
+@bot.event
+async def on_guild_join(ctx):
+	# Let's message hello in the main chat
+	msg = 'Hello there! Thanks for having me on your server! \n\nFeel free to put me to work.\n\nYou can get a list of my commands by typing `d9 help` either in chat or in PM.\n\n'
+	try:
+		await ctx.send(msg)
+	except Exception:
+		pass
 
 @bot.command()
 async def get(ctx):

@@ -16,12 +16,6 @@ class Admin(commands.Cog):
             return True
         await ctx.send("You dont have permission to use this command.")
         return False
-
-    @commands.Cog.listener()
-    async def on_member_join(self, member):
-        channel = member.guild.system_channel
-        if channel is not None:
-            await channel.send('Welcome {0.mention}.'.format(member))
     
     @commands.command()
     async def ban(self, ctx, member : discord.Member, *, reason=None):
@@ -49,3 +43,22 @@ class Admin(commands.Cog):
         await member.remove_roles(role)
         return True
 
+    @commands.command(pass_context=True)
+    async def broadcast(self, ctx, *, message : str = None):
+        """Broadcasts a message to all connected servers.  Can only be done by the owner."""
+
+        channel = ctx.message.channel
+        author  = ctx.message.author
+
+        if message == None:
+            await channel.send(usage)
+            return
+
+        for server in self.bot.guilds:
+            # Get the default channel
+            targetChan = discord.utils.get(server.channels, name="general")
+            
+            try:
+                await targetChan.send(message)
+            except Exception:
+                pass
