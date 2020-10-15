@@ -10,6 +10,7 @@ from discord.ext.commands import Bot
 import asyncio
 from giphy_client.rest import ApiException
 from trivia import start_quiz
+from cogs.Admin import Admin
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -18,6 +19,8 @@ GIF_TOKEN = os.getenv('GIFY_TOKEN')
 BOT_OWNER_ID = os.getenv('OWNER')
 
 bot = commands.Bot(command_prefix=['d9 ', 'D9 ', 'd9', 'D9', 'd9 !', 'D9 !', 'd9 $', 'D9 $'])
+
+bot.add_cog(Admin(bot, BOT_OWNER_ID))
 
 api_instance = giphy_client.DefaultApi()
 

@@ -222,8 +222,8 @@ async def start_quiz(ctx, cache_msg, bot):
     for reaction in updated_msg.reactions:
         async for user in reaction.users():
             users.append(user)
-
     print(users, flush=True)
+    
     await new_msg.edit(content=":confetti_ball: Game Starting!! :confetti_ball:")
     await asyncio.sleep(1)
     await play_trivia(new_msg, ctx, bot, users)
