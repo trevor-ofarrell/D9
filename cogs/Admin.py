@@ -37,3 +37,18 @@ class Admin(commands.Cog):
             await ctx.send(user.name + " has been unbanned")
             return True
         await ctx.send("You dont have permission to use this command.")
+
+    @commands.command()
+    async def add_role(self, ctx, member: discord.Member, role: discord.Role):
+        if ctx.message.author.guild_permissions.administrator or ctx.message.author.id == int(self.owner_id):
+            await member.add_roles(role)
+            return True
+        await ctx.send("You dont have permission to use this command.")
+
+    @commands.command()
+    async def remove_role(self, ctx, member: discord.Member, role: discord.Role):
+        if ctx.message.author.guild_permissions.administrator or ctx.message.author.id == int(self.owner_id):
+            await member.remove_roles(role)
+            return True
+        await ctx.send("You dont have permission to use this command.")
+
