@@ -11,6 +11,12 @@ class Admin(commands.Cog):
         self._last_member = None
         self.owner_id = owner_id
 
+    async def cog_check(self, ctx):
+        if ctx.message.author.guild_permissions.administrator or ctx.message.author.id == int(self.owner_id):
+            return True
+        await ctx.send("You dont have permission to use this command.")
+        return False
+
     @commands.Cog.listener()
     async def on_member_join(self, member):
         channel = member.guild.system_channel
@@ -19,36 +25,27 @@ class Admin(commands.Cog):
     
     @commands.command()
     async def ban(self, ctx, member : discord.Member, *, reason=None):
-        if ctx.message.author.guild_permissions.administrator or ctx.message.author.id == int(self.owner_id):
-            await member.ban(reason=reason)
-            await ctx.send(member.name + " has been banned")
-            return True
-        await ctx.send("You dont have permission to use this command.")
+        await member.ban(reason=reason)
+        await ctx.send(member.name + " has been banned")
 
     @commands.command()
     async def unban(self, ctx, id: int, reason=None):
         if not id:
             await ctx.send("you failed to specify the user's id.")
             return False
-        if ctx.message.author.guild_permissions.administrator or ctx.message.author.id == int(self.owner_id):
-            user = await self.bot.fetch_user(id)
-            print(type(user), flush=True)
-            await ctx.guild.unban(user, reason=reason)
-            await ctx.send(user.name + " has been unbanned")
-            return True
-        await ctx.send("You dont have permission to use this command.")
+        user = await self.bot.fetch_user(id)
+        print(type(user), flush=True)
+        await ctx.guild.unban(user, reason=reason)
+        await ctx.send(user.name + " has been unbanned")
+        return True
 
     @commands.command()
     async def add_role(self, ctx, member: discord.Member, role: discord.Role):
-        if ctx.message.author.guild_permissions.administrator or ctx.message.author.id == int(self.owner_id):
-            await member.add_roles(role)
-            return True
-        await ctx.send("You dont have permission to use this command.")
+        await member.add_roles(role)
+        return True
 
     @commands.command()
     async def remove_role(self, ctx, member: discord.Member, role: discord.Role):
-        if ctx.message.author.guild_permissions.administrator or ctx.message.author.id == int(self.owner_id):
-            await member.remove_roles(role)
-            return True
-        await ctx.send("You dont have permission to use this command.")
+        await member.remove_roles(role)
+        return True
 
