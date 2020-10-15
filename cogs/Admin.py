@@ -24,7 +24,7 @@ class Admin(commands.Cog):
     async def ban(self, ctx, member : discord.Member, *, reason=None):
         if ctx.message.author.guild_permissions.administrator or ctx.message.author.id == int(self.owner_id):
             await member.ban(reason=reason)
-            await ctx.send(member.name + " Has been banned")
+            await ctx.send(member.name + " has been banned")
             return True
         await ctx.send("You dont have permission to use this command.")
 
@@ -37,6 +37,6 @@ class Admin(commands.Cog):
             user = await self.bot.fetch_user(id)
             print(type(user), flush=True)
             await ctx.guild.unban(user, reason=reason)
-            await ctx.send(user.name + " Has been unbanned")
+            await ctx.send(user.name + " has been unbanned")
             return True
         await ctx.send("You dont have permission to use this command.")
