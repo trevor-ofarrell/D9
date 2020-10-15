@@ -1,11 +1,8 @@
-import os
 import discord
 import json
 from discord.ext import commands
 from discord.ext.commands import Bot
 import asyncio
-
-BOT_OWNER_ID = os.getenv('OWNER')
 
 class Admin(commands.Cog):
 
