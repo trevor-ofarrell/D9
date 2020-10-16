@@ -29,16 +29,8 @@ api_instance = giphy_client.DefaultApi()
 
 @bot.event
 async def on_member_join(member):
-    ment = member.mention
-    print("welcome", flush=True)
-    await bot.get_channel(channel.id).send(f"""Welcome to the server {member.mention}""")
-    
-@bot.event
-async def on_member_join(member):
-    print(f'Recognised that a member called {member} joined')
-    await member.send(".")
-    print('Sent message to ' + member.name)
-
+    channel = discord.utils.get(member.guild.channels, name='general')
+    await channel.send(f'Enjoy your stay {member.mention}!')
 
 @bot.event
 async def on_guild_join(guild):
