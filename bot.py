@@ -44,7 +44,9 @@ async def on_member_join(member):
 async def on_guild_join(guild):
     for channel in guild.text_channels:
         if channel.permissions_for(guild.me).send_messages:
-            await channel.send('Hello there! Thanks for having me on your server! \n\nFeel free to put me to work.\n\nYou can get a list of my commands by typing `d9 help` either in chat or in PM.\n\n')
+            await channel.send(
+                'Hello there! Thanks for having me on your server! \nFeel free to put me to work.\nYou can get a list of my commands by typing `d9 help` either in chat or in PM.\n'
+            )
         break
 
 @bot.command()
