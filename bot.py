@@ -39,14 +39,13 @@ async def on_member_join(member):
     await member.send(".")
     print('Sent message to ' + member.name)
 
+
 @bot.event
-async def on_guild_join(ctx):
-	# Let's message hello in the main chat
-	msg = 'Hello there! Thanks for having me on your server! \n\nFeel free to put me to work.\n\nYou can get a list of my commands by typing `d9 help` either in chat or in PM.\n\n'
-	try:
-		await ctx.send(msg)
-	except Exception:
-		pass
+async def on_guild_join(guild):
+    for channel in guild.text_channels:
+        if channel.permissions_for(guild.me).send_messages:
+            await channel.send('Hello there! Thanks for having me on your server! \n\nFeel free to put me to work.\n\nYou can get a list of my commands by typing `d9 help` either in chat or in PM.\n\n')
+        break
 
 @bot.command()
 async def get(ctx):
