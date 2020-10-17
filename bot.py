@@ -11,6 +11,7 @@ import asyncio
 from giphy_client.rest import ApiException
 from trivia import start_quiz
 from cogs.Admin import Admin
+import time
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -27,8 +28,35 @@ bot.add_cog(Admin(bot, BOT_OWNER_ID))
 
 api_instance = giphy_client.DefaultApi()
 
+messages = joined = 0
+
+async def update_stats():
+    await bot.wait_until_ready()
+    global messages, joined
+
+    while not bot.is_closed():
+        try:
+            with open('logs.txt', 'a') as f:
+                f.write(f"Time: {int(time.time())}, messages: {messages}, members joined: {joined}\n")
+            messages = 0
+            joined = 0
+
+            await asyncio.sleep(6.0)
+        except Exception as e:
+            print(e, flush=True)
+
+@bot.event
+async def on_message(message):
+    banned_terms = ["fuck", "bitch"]
+    if any(banned_word in message.content for banned_word in banned_terms):
+        await message.channel.send("No swearing" + message.author.name)
+        await message.delete()
+    await bot.process_commands(message)
+
 @bot.event
 async def on_member_join(member):
+    global joined
+    joined += 1
     channel = discord.utils.get(member.guild.channels, name='general')
     await channel.send(f'Enjoy your stay {member.mention}!')
 
@@ -281,6 +309,7 @@ async def hug(ctx, members: commands.Greedy[discord.Member]):
     em.set_image(url=this_hug[0])
     await ctx.send(embed=em)
 
+bot.loop.create_task(update_stats())
 bot.run(TOKEN)
 
 
