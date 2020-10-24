@@ -22,7 +22,7 @@ BOT_OWNER_ID = os.getenv('OWNER')
 intents = discord.Intents.all()
 intents.members = True
 
-bot = commands.Bot(command_prefix=['d9 ', 'D9 ', 'd9', 'D9', 'd9 !', 'D9 !', 'd9 $', 'D9 $'], intents=intents)
+bot = commands.Bot(command_prefix=['d9 ', 'D9 ', 'd9', 'D9', 'd9 !', 'D9 !', 'd9 $', 'D9 $'], intents=intents, help_command=None)
 
 bot.add_cog(Admin(bot, BOT_OWNER_ID))
 
@@ -47,10 +47,19 @@ async def update_stats():
 
 @bot.event
 async def on_message(message):
-    banned_terms = ["fuck", "bitch"]
+    banned_terms = []
     if any(banned_word in message.content for banned_word in banned_terms):
         await message.channel.send("No swearing" + message.author.name)
         await message.delete()
+    if message.content.lower() == "d9 help":
+        em = discord.Embed(title = 'Command list', color=discord.Color.green())
+        em.add_field(name="Actions", value="greet, hug, slap - Usage: d9 !<command> <@username>")
+        em.add_field(name="Gamble", value="Usage: d9 !gamble 100")
+        em.add_field(name="Flip a coin", value="Usage: d9 !flipcoin")
+        em.add_field(name="Fun", value="8ball")
+        em.add_field(name="Economy", value="balance, send")
+        em.add_field(name="Gifs", value="Usage: d9 !gif <whatever you want a gif of>")
+        await message.channel.send(content=None, embed=em)
     await bot.process_commands(message)
 
 @bot.event
