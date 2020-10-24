@@ -53,12 +53,13 @@ async def on_message(message):
         await message.delete()
     if message.content.lower() == "d9 help":
         em = discord.Embed(title = 'Command list', color=discord.Color.green())
-        em.add_field(name="Actions", value="Commands:\n -greet\n -hug\n -slap\n Usage: d9 <command> <@user>", inline = False)
-        em.add_field(name="Gamble", value="Usage: d9 !gamble 100", inline = False)
+        em.add_field(name="Actions", value="Commands:\n \a- greet\n \a- hug\n \a- slap\n Usage: d9 <command> <@user>", inline = False)
+        em.add_field(name="Gamble", value="""Usage: d9 !gamble 100""", inline = False)
         em.add_field(name="Flip a coin", value="Usage: d9 !flipcoin", inline = False)
         em.add_field(name="Fun", value="8ball", inline = False)
-        em.add_field(name="Economy", value="Commands: balance, send\n Usage: d9 balance, d9 send <@user> <amount>", inline = False)
-        em.add_field(name="Gifs", value="Usage: d9 !gif <whatever you want a gif of>", inline = False)
+        em.add_field(name="Economy", value="Commands:\n \a- balance\n \a- send\n \a- beg\n Usage:\n \a- d9 balance\n \a- d9 send <@user> <amount>\n \a- d9 beg", inline = False)
+        em.add_field(name="Gifs", value="Commands:\n \a- gif\n Usage:\n \a- d9 !gif <word>", inline = False)
+        em.add_field(name="Admin/Owner only", value="Commands:\n \a- ban\n \a- unban\n \a- add_role\n \a- remove_role\n")
         await message.channel.send(content=None, embed=em)
     await bot.process_commands(message)
 
