@@ -62,3 +62,4 @@ class Admin(commands.Cog):
                 await targetChan.send(message)
             except Exception:
                 pass
+

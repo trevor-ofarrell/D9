@@ -30,6 +30,8 @@ api_instance = giphy_client.DefaultApi()
 
 messages = joined = 0
 
+owner_id = BOT_OWNER_ID
+
 async def update_stats():
     await bot.wait_until_ready()
     global messages, joined
@@ -64,6 +66,21 @@ async def on_message(message):
         )
         await message.channel.send(content=None, embed=em)
     await bot.process_commands(message)
+
+
+async def get_msg(channel, msgID: int):
+    msg = await channel.fetch_message(msgID)
+    return(msg)
+
+@bot.command()
+async def delete_msg(ctx, arg):
+    print(arg, flush=True)
+    if ctx.message.author.guild_permissions.administrator or ctx.message.author.id == int(owner_id):
+        msg = await get_msg(ctx.message.channel, arg)
+        print(ctx.message.channel, flush=True)
+        await msg.delete()
+    else:
+        return 1
 
 @bot.event
 async def on_member_join(member):
