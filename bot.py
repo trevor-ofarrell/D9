@@ -125,6 +125,17 @@ async def quiz(ctx):
     await start_quiz(ctx, cache_msg, bot)
 
 @bot.command()
+async def notify(ctx, member: discord.Member):
+    channel = ctx.message.channel
+    i = 0
+    while i <= 10:
+        i += 1
+        await ctx.send("{}".format(member.mention))
+        await asyncio.sleep(5)
+    return True
+
+
+@bot.command()
 async def echo(ctx, *args):
     await ctx.send('{}'.format(' '.join(args)))
 
