@@ -125,13 +125,23 @@ async def quiz(ctx):
     await start_quiz(ctx, cache_msg, bot)
 
 @bot.command()
-async def notify(ctx, member: discord.Member):
+async def notify(ctx, member: discord.Member, arg=None):
     channel = ctx.message.channel
     i = 0
-    while i <= 10:
+    try:
+        if arg:
+            notif_arg = arg
+            while i <= 13:
+                i += 1
+                await ctx.send("{} {}".format(member.mention, notif_arg))
+                await asyncio.sleep(3)
+            return True
+    except:
+        pass
+    while i <= 13:
         i += 1
         await ctx.send("{}".format(member.mention))
-        await asyncio.sleep(5)
+        await asyncio.sleep(3)
     return True
 
 
