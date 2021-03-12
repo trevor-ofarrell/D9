@@ -59,7 +59,7 @@ async def on_message(message):
         em.add_field(name="Probability", value="Commands:\n \a - gamble\n \a - flipcoin\n Usage:\n \a - d9 gamble <amount>\n \a - d9 flipcoin", inline = False)
         em.add_field(name="Fun", value="8ball", inline = False)
         em.add_field(name="Economy", value="Commands:\n \a - balance\n \a - beg\n \a - send\n Usage:\n \a - d9 <command>\n \a - d9 send <@user> <amount>", inline = False)
-        em.add_field(name="Gifs", value="Commands:\n \a - gif\n Usage:\n \a - d9 !gif <word>", inline = False)
+        em.add_field(name="Gifs", value="Commands:\n \a - gif\n Usage:\n \a - d9 gif <word>", inline = False)
         em.add_field(
             name="Admin/Owner only",
             value="Commands:\n \a - ban\n \a - unban\n \a - add_role\n \a - remove_role\n Usage:\n \a - d9 ban <@user>\n \a - d9 unban <user id>\n \a - d9 add_role/remove_role <@user> <role>"
@@ -311,11 +311,7 @@ async def _8ball(ctx, *, question):
         "not in a million years",
         "most likley, yes",
         "you wouldn't belive me if I told you",
-        "Hmmmm, ask Milly",
-        "Shane knows",
-        "Eric is paying me to withhold this information",
         "I dont wanna talk",
-        "drainer knows the answer",
         "Follow you heart",
         'Without a doubt.', 
         'Outlook good.', 
@@ -361,14 +357,3 @@ async def hug(ctx, members: commands.Greedy[discord.Member]):
 
 bot.loop.create_task(update_stats())
 bot.run(TOKEN)
-
-
-"""@bot.command()
-async def help(ctx):
-    em = discord.Embed(title = 'Command list', color=discord.Color.green())
-    em.add_field(name="Actions", value="greet, hug, slap - Usage: d9 !<command> <@username>")
-    em.add_field(name="Gamble", value="Usage: d9 !gamble 100")
-    em.add_field(name="Flip a coin", value="Usage: d9 !flipcoin")
-    em.add_field(name="Fun", value="8ball")
-    em.add_field(name="Economy", value="balance, send")
-    em.add_field(name="Gifs", value="Usage: d9 !gif <whatever you want a gif of>")"""
